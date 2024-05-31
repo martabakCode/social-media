@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,12 +20,13 @@ class PostController extends Controller
         if (Auth::user()){
         $users = auth()->user();
 
-        $posts = Post::whereIn('user_id', $users)->with('user')->latest()->paginate(5);
-
+        $posts = Post::where('user_id', '!=',$users->id)->with('user')->latest()->paginate(5);
+        $follows = User::where('id',$users->id)->with('profile.followers')->latest()->paginate(5);
         }else{
             $posts = Post::with('user')->latest()->paginate(5);
+            $follows = User::with('profile.followers')->latest()->paginate(5);
         }
-        return view('posts.index', compact('posts')
+        return view('posts.index', compact('posts','follows')
         );
     }
 
@@ -96,13 +98,7 @@ class PostController extends Controller
         return redirect('/profile/' . auth()->user()->id);
     }
 
-
-    public function cctv(Post $post){
-        $posts = Post::latest()->paginate(5);
-        return view('posts.cctv', compact('posts'));
-    }
-
-    public function show(\App\Post $post){
+    public function show(\App\Models\Post $post){
         $likers = (auth()->user()) ? auth()->user()->liking->contains($post->id) : false;
         return view('posts.show', compact('post','likers' ));
     }

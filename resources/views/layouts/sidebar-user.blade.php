@@ -6,10 +6,12 @@
 				<div class="flex w-full flex-wrap items-center justify-between px-3 ">
 					<!-- Avatar -->
 					<div class="relative ms-3" data-twe-dropdown-ref>
-						<a href="{{ url('profile/'.Auth::user()->id) }}" class="flex items-center whitespace-nowrap text-black/60 transition duration-200 hover:text-black/80 hover:ease-in-out focus:text-black/80 active:text-black/80 motion-reduce:transition-none dark:text-white/60 dark:hover:text-white/80 dark:focus:text-white/80 dark:active:text-white/80" href="#"> @if (Route::has('login')) @auth <a href="{{ route('login') }}">
+                        @if (Route::has('login'))
+                        @auth
+						<a href="{{ url('profile/'.Auth::user()->id) }}" class="flex items-center whitespace-nowrap text-white transition duration-200  hover:ease-in-out focus:text-black/80 motion-reduce:transition-none" href="#">
 								<div class="grid grid-cols-12 grid-flow-col">
 									<div class="col-span-2 ">
-										<img src="{{ asset('assets/img/logo-medsos.png') }}" class="h-8 mr-3 border rounded-2xl border-gray-600" alt="Social Media">
+										<img src="{{ Auth::user()->profile->profileImage() }}" class="h-8 mr-3 border rounded-2xl border-gray-600" alt="Social Media">
 									</div>
 									<div class="col-span-10">
 										<span class="self-center text-md font-semibold whitespace-nowrap">{{Auth::user()->name}}</span>
@@ -37,7 +39,7 @@
 		<div class="p-5  sticky top-0 border-b-2 border-gray-600"> @if (Route::has('login')) @auth <a href="{{ url('profile/'.auth()->user()->id) }}">
 				<div class="grid grid-cols-12 grid-flow-col">
 					<div class="col-span-2 ">
-						<img src="{{ asset('assets/img/logo-medsos.png') }}" class="h-8 mr-3 border rounded-2xl border-gray-600" alt="Social Media">
+						<img src="{{ Auth::user()->profile->profileImage() }}" class="h-8 mr-3 border rounded-2xl border-gray-600" alt="Social Media">
 					</div>
 					<div class="col-span-10">
 						<span class="self-center text-md font-semibold whitespace-nowrap">{{Auth::user()->name}}</span>
@@ -88,10 +90,14 @@
 					</a>
 				</li>
 				<li>
-					<a href="#" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
-						<i class="fa-solid fa-right-from-bracket flex-shrink-0 w-5 h-5 transition duration-75 text-cyan-400 group-hover:text-white"></i>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+
+                    <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
+                        <i class="fa-solid fa-right-from-bracket flex-shrink-0 w-5 h-5 transition duration-75 text-cyan-400 group-hover:text-white"></i>
 						<span class="flex-1 ms-3 whitespace-nowrap">Logout</span>
-					</a>
+                    </button>
 				</li> @else <li>
 					<a href="#" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
 						<i class="fa-solid fa-house flex-shrink-0 w-5 h-5 transition duration-75 text-cyan-400 group-hover:text-white"></i>

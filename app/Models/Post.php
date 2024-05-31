@@ -20,4 +20,9 @@ class Post extends Model
     public function comments(){
         return $this->hasMany(Comment::class);
     }
+
+    public function bookmarkers(){
+        return $this->belongsToMany(User::class,'post_bookmarks_pivot');
+    }
+
 }

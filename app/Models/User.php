@@ -58,6 +58,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Post::class);
     }
 
+    public function bookmarking(){
+        return $this->belongsToMany(Post::class,'post_bookmarks_pivot');
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -69,6 +73,6 @@ class User extends Authenticatable
     }
 
     public function following(){
-        return $this->hasMany(Profile::class);
+        return $this->belongsToMany(Profile::class);
     }
 }

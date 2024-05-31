@@ -30,7 +30,7 @@
                         <img src="{{$post->user->profile->profileImage()}}" alt="profile-pic" class="w-8 h-8 rounded-full">
                         <div>
                             <p class="text-gray-200 font-semibold">{{$post->user->username}}</p>
-                            <p class="text-gray-400 text-sm">{{$post->user->created_at}}</p>
+                            <p class="text-gray-400 text-sm">{{$relativeTime = \Carbon\Carbon::parse($post->user->created_at)->diffForHumans() }}</p>
                         </div>
                     </div>
                     <div class="text-gray-100 cursor-pointer">
@@ -55,36 +55,82 @@
                 </div>
                 <!-- Image -->
                 <div class="mb-4">
+                    @auth
                     <a href="/p/{{ $post->id }}">
                     <img src="/storage/{{$post->thumbnail}}" alt="Post Image" class="w-full h-48 object-cover rounded-md">
                     </a>
+                    @else
+                    <a href="/login">
+                        <img src="/storage/{{$post->thumbnail}}" alt="Post Image" class="w-full h-48 object-cover rounded-md">
+                    </a>
+                    @endauth
                 </div>
                 <hr class="mt-2 mb-2">
                 <!-- Like and Comment Section -->
                 <div class="flex items-center justify-between text-gray-500">
                     <div class="flex items-center space-x-2">
-                        <button class="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1">
-                            <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <button class="flex justify-center items-center gap-2 px-2 rounded-full p-1">
+                            @auth
+
+
+                            <form action="{{ url('like/'.$post->id) }}" method="POST">
+                                @csrf <!-- Add CSRF token for security -->
+                                <button type="submit">
+                                    <svg class="w-5 h-5 {{$post->likers->find(auth()->user()->id) == true ? "text-red-500" : "" }} hover:text-red-500 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C6.11 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-4.11 6.86-8.55 11.54L12 21.35z" />
+                                    </svg>
+                                </button>
+                            </form>
+                            @else
+                            <svg class="w-5 h-5 hover:text-red-500 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M12 21.35l-1.45-1.32C6.11 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-4.11 6.86-8.55 11.54L12 21.35z" />
                             </svg>
+                            @endauth
+                            </a>
                             <span>{{$post->likers->count()}} Likes</span>
                         </button>
                     </div>
-                    <button class="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1">
-                        <svg width="22px" height="22px" viewBox="0 0 24 24" class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.5997 2.37562 15.1116 3.04346 16.4525C3.22094 16.8088 3.28001 17.2161 3.17712 17.6006L2.58151 19.8267C2.32295 20.793 3.20701 21.677 4.17335 21.4185L6.39939 20.8229C6.78393 20.72 7.19121 20.7791 7.54753 20.9565C8.88837 21.6244 10.4003 22 12 22ZM8 13.25C7.58579 13.25 7.25 13.5858 7.25 14C7.25 14.4142 7.58579 14.75 8 14.75H13.5C13.9142 14.75 14.25 14.4142 14.25 14C14.25 13.5858 13.9142 13.25 13.5 13.25H8ZM7.25 10.5C7.25 10.0858 7.58579 9.75 8 9.75H16C16.4142 9.75 16.75 10.0858 16.75 10.5C16.75 10.9142 16.4142 11.25 16 11.25H8C7.58579 11.25 7.25 10.9142 7.25 10.5Z"></path>
-                            </g>
-                        </svg>
-                        <span>{{$post->comments()->count()}} Comment</span>
-                    </button>
+                    <div class="flex items-center space-x-2">
+                        @auth
+                        <a href="{{ url('p/'.$post->id) }}" class="flex justify-center items-center gap-2 px-2 rounded-full p-1">
+                            <svg width="22px" height="22px" viewBox="0 0 24 24" class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.5997 2.37562 15.1116 3.04346 16.4525C3.22094 16.8088 3.28001 17.2161 3.17712 17.6006L2.58151 19.8267C2.32295 20.793 3.20701 21.677 4.17335 21.4185L6.39939 20.8229C6.78393 20.72 7.19121 20.7791 7.54753 20.9565C8.88837 21.6244 10.4003 22 12 22ZM8 13.25C7.58579 13.25 7.25 13.5858 7.25 14C7.25 14.4142 7.58579 14.75 8 14.75H13.5C13.9142 14.75 14.25 14.4142 14.25 14C14.25 13.5858 13.9142 13.25 13.5 13.25H8ZM7.25 10.5C7.25 10.0858 7.58579 9.75 8 9.75H16C16.4142 9.75 16.75 10.0858 16.75 10.5C16.75 10.9142 16.4142 11.25 16 11.25H8C7.58579 11.25 7.25 10.9142 7.25 10.5Z"></path>
+                                </g>
+                            </svg>
+                            <span>{{$post->comments()->count()}} Comment</span>
+                        </a>
+                        @else
+                        <a href="{{ url('login') }}" class="flex justify-center items-center gap-2 px-2 rounded-full p-1">
+                            <svg width="22px" height="22px" viewBox="0 0 24 24" class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.5997 2.37562 15.1116 3.04346 16.4525C3.22094 16.8088 3.28001 17.2161 3.17712 17.6006L2.58151 19.8267C2.32295 20.793 3.20701 21.677 4.17335 21.4185L6.39939 20.8229C6.78393 20.72 7.19121 20.7791 7.54753 20.9565C8.88837 21.6244 10.4003 22 12 22ZM8 13.25C7.58579 13.25 7.25 13.5858 7.25 14C7.25 14.4142 7.58579 14.75 8 14.75H13.5C13.9142 14.75 14.25 14.4142 14.25 14C14.25 13.5858 13.9142 13.25 13.5 13.25H8ZM7.25 10.5C7.25 10.0858 7.58579 9.75 8 9.75H16C16.4142 9.75 16.75 10.0858 16.75 10.5C16.75 10.9142 16.4142 11.25 16 11.25H8C7.58579 11.25 7.25 10.9142 7.25 10.5Z"></path>
+                                </g>
+                            </svg>
+                            <span>{{$post->comments()->count()}} Comment</span>
+                        </a>
+                        @endauth
+                    </div>
+                    @auth
+                    <form action="{{ url('bookmark/'.$post->id) }}" method="POST">
+                        @csrf <!-- Add CSRF token for security -->
+                        <button class="flex  justify-center items-center gap-2 px-2 rounded-full p-1">
+                            <i class="fa-solid fa-bookmark {{$post->bookmarkers->find(auth()->user()->id) == true ? "text-yellow-300" : "" }} hover:text-yellow-300"></i>
+                        </button>
+                    </form>
+                @else<button class="flex  justify-center items-center gap-2 px-2 rounded-full p-1">
+                    <i class="fa-solid fa-bookmark hover:text-yellow-300"></i>
+                </button>
+                @endauth
                 </div>
             </div>
             @endforeach
             @else
-            <p class="text-center">Hey, thanks for dropping by, your followed friend's posts will show up here!</p>
+            <p class="text-center"> Hey, thanks for dropping by, your followed friend's posts will show up here!</p>
             @endif
         </div>
         <div class="w-full md:w-1/4 lg:w-2/5 p-5 md:px-12 lg:24 h-full overflow-x-scroll antialiased">
@@ -96,18 +142,20 @@
                 </div>
                 <div class="flow-root">
                     <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                        @foreach ($follows as $follow)
                         <li class="py-3 sm:py-4">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0">
-                                    <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image">
+                                    <img class="w-8 h-8 rounded-full" src="{{$follow->profile->profileImage()}}" alt="Neil image">
                                 </div>
                                 <div class="flex-1 min-w-0 ms-4">
-                                    <p class="text-sm font-medium truncate text-white"> Username </p>
-                                    <p class="text-sm truncate text-gray-400"> Nama Lengkap </p>
+                                    <p class="text-sm font-medium truncate text-white"> {{$follow->username}} </p>
+                                    <p class="text-sm truncate text-gray-400"> {{$follow->name}} </p>
                                 </div>
                                 <a href="" class="inline-flex items-center text-base font-semibold text-cyan-500"> Follow </a>
                             </div>
                         </li>
+                        @endforeach
                     </ul>
                 </div>
                 <div class="items-center justify-between">

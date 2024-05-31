@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('follow/{user}', 'App\Http\Controllers\FollowsController@store');
 
 Route::post('/like/{post}','App\Http\Controllers\LikeController@store');
+Route::post('/bookmark/{post}','App\Http\Controllers\BookmarkController@store');
 
 Route::get('/','App\Http\Controllers\PostController@index');
 
