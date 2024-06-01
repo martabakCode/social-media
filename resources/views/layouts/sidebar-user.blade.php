@@ -66,7 +66,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="{{ url('exlpore') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
+					<a href="{{ url('explore') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
 						<i class="fa-solid fa-magnifying-glass flex-shrink-0 w-5 h-5 transition duration-75 text-cyan-400 group-hover:text-white"></i>
 						<span class="flex-1 ms-3 whitespace-nowrap">Explore</span>
 					</a>
@@ -84,7 +84,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="#" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
+					<a href="bookmark" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
 						<i class="fa-solid fa-bookmark flex-shrink-0 w-5 h-5 transition duration-75 text-cyan-400 group-hover:text-white"></i>
 						<span class="flex-1 ms-3 whitespace-nowrap">Bookmarks</span>
 					</a>
@@ -99,13 +99,13 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">Logout</span>
                     </button>
 				</li> @else <li>
-					<a href="#" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
+					<a href="{{ url('')}}" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
 						<i class="fa-solid fa-house flex-shrink-0 w-5 h-5 transition duration-75 text-cyan-400 group-hover:text-white"></i>
 						<span class="ms-3">Home</span>
 					</a>
 				</li>
 				<li>
-					<a href="#" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
+					<a href="{{ url('explore')}}" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
 						<i class="fa-solid fa-magnifying-glass flex-shrink-0 w-5 h-5 transition duration-75 text-cyan-400 group-hover:text-white"></i>
 						<span class="flex-1 ms-3 whitespace-nowrap">Explore</span>
 					</a>

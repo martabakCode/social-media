@@ -21,7 +21,7 @@ class PostController extends Controller
         $users = auth()->user();
 
         $posts = Post::where('user_id', '!=',$users->id)->with('user')->latest()->paginate(5);
-        $follows = User::where('id',$users->id)->with('profile.followers')->latest()->paginate(5);
+        $follows = User::where('id','!=',$users->id)->with('profile.followers')->latest()->paginate(5);
         }else{
             $posts = Post::with('user')->latest()->paginate(5);
             $follows = User::with('profile.followers')->latest()->paginate(5);
@@ -46,9 +46,6 @@ class PostController extends Controller
         return redirect('/profile/' . auth()->user()->id);
     }
 
-    public function manage(){
-        return view('posts.manage');
-    }
     public function edit($post){
         $actualPost = Post::find($post);
         return view('posts.edit', compact('actualPost'));
@@ -80,12 +77,6 @@ class PostController extends Controller
 
         $imagePath = request('image')->store('uploads','public');
         $thumbnailPath = request('image')->store('thumbnail','public');
-
-        $thumbnail = public_path("storage/{$thumbnailPath}");
-        Storage::move($thumbnailPath, $thumbnail);
-
-        $image = public_path("storage/{$imagePath}");
-        Storage::move($imagePath, $image);
 
 
         auth()->user()->posts()->create([

@@ -35,9 +35,6 @@ class ProfileController extends Controller
              if (request('image')){
                  $imagePath = request('image')->store('profile','public');
 
-                 $image = public_path("storage/{$imagePath}");
-                 Storage::move($imagePath, $image);
-
                  $imageArr =['image' => $imagePath];
              }
 
@@ -52,4 +49,25 @@ class ProfileController extends Controller
 
 
     }
+    public function explore(Request $request)
+    {
+        // If the request does not contain a keyword, display the search form
+        if (!$request->has('keyword')) {
+            $results = [];
+            return view('profiles.search', ['results' => $results]);
+        }
+
+        // Validate search input
+        $request->validate([
+            'keyword' => 'required|string|max:255',
+        ]);
+
+        // Perform search query
+        $keyword = $request->input('keyword');
+        $results = User::where('username', 'like', "%$keyword%")->with('profile')->get();
+
+        // Return search results
+        return view('profiles.search', ['results' => $results]);
+    }
+
 }

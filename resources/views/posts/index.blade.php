@@ -26,13 +26,18 @@
             <div class="border border-white p-8 rounded-lg shadow-md mt-6 max-w-md">
                 <!-- User Info with Three-Dot Menu -->
                 <div class="flex items-center justify-between mb-4">
+                    <a href="{{ url('profile/'.$post->user->id) }}">
                     <div class="flex items-center space-x-2">
+
                         <img src="{{$post->user->profile->profileImage()}}" alt="profile-pic" class="w-8 h-8 rounded-full">
                         <div>
+
                             <p class="text-gray-200 font-semibold">{{$post->user->username}}</p>
                             <p class="text-gray-400 text-sm">{{$relativeTime = \Carbon\Carbon::parse($post->user->created_at)->diffForHumans() }}</p>
                         </div>
+
                     </div>
+                    </a>
                     <div class="text-gray-100 cursor-pointer">
                         <!-- Three-dot menu icon -->
                         <button class="hover:bg-gray-50 rounded-full p-1">
@@ -144,16 +149,32 @@
                     <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach ($follows as $follow)
                         <li class="py-3 sm:py-4">
+
                             <div class="flex items-center">
+                                <a href="{{ url('profile/'.$follow->id) }}">
                                 <div class="flex-shrink-0">
                                     <img class="w-8 h-8 rounded-full" src="{{$follow->profile->profileImage()}}" alt="Neil image">
                                 </div>
+                            </a>
                                 <div class="flex-1 min-w-0 ms-4">
                                     <p class="text-sm font-medium truncate text-white"> {{$follow->username}} </p>
                                     <p class="text-sm truncate text-gray-400"> {{$follow->name}} </p>
                                 </div>
-                                <a href="" class="inline-flex items-center text-base font-semibold text-cyan-500"> Follow </a>
+                                @auth
+
+
+                                <form action="{{ url('follow/'.$follow->id) }}" method="POST">
+                                    @csrf <!-- Add CSRF token for security -->
+
+                                    @if ($follow->profile->followers->find(auth()->user()->id) == true)
+                                    <button class="text-xs font-bold text-gray-200 p-2 rounded"> Unfollowed</button>
+                                    @else
+                                    <button class="text-xs font-bold text-white p-2 rounded bg-cyan-400"> Follow</button>
+                                    @endif
+                                </form>
+                                @endauth
                             </div>
+
                         </li>
                         @endforeach
                     </ul>

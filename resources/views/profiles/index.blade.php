@@ -11,6 +11,7 @@
 				<div class="text-2xl">
 					{{$user->username}}
 				</div>
+                @auth
                 @if ($user->id == auth()->user()->id)
                 <a href="/profile/{{$user->id}}/edit" class="text-xs font-bold text-black p-2 rounded bg-white">Edit Profile</a>
                 @else
@@ -25,6 +26,7 @@
                 </form>
 
                 @endif
+                @endauth
 			</div>
 			<div class="text-gray-300 flex flex-row gap-10 items-center">
 				<div>
